@@ -1,6 +1,8 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import logging
 import logging.handlers
+import os
 import pickle
 import struct
 try:
@@ -44,7 +46,7 @@ class Receiver(ThreadingTCPServer):
     allow_reuse_address = True
 
     def __init__(self,
-                 host='localhost',
+                 host='0.0.0.0',
                  port=logging.handlers.DEFAULT_TCP_LOGGING_PORT,
                  handler=Handler):
         ThreadingTCPServer.__init__(self, (host, port), handler)
@@ -65,7 +67,8 @@ class Receiver(ThreadingTCPServer):
 
 
 def main():
-    logging.basicConfig(level='INFO')
+    logging.basicConfig(level='INFO',
+                        format=os.environ.get('LOG_FORMAT'))
     server = Receiver()
     logging.info('%r starting', server)
     server.serve()

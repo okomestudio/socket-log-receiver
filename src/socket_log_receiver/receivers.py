@@ -66,9 +66,28 @@ class Receiver(ThreadingTCPServer):
             abort = self.abort
 
 
+def configure_logging():
+    filename = os.environ.get('LOG_FILENAME') or None
+    if filename:
+        mode = os.environ.get('LOG_FILEMODE') or 'a'
+        handlers = [logging.handlers.WatchedFileHandler(filename, mode=mode),
+                    logging.StreamHandler()]
+    else:
+        handlers = [logging.StreamHandler()]
+
+    format = os.environ.get('LOG_FORMAT') or logging.BASIC_FORMAT
+    datefmt = os.environ.get('LOG_DATEFMT') or None
+    formatter = logging.Formatter(format, datefmt)
+
+    for handler in handlers:
+        handler.setFormatter(formatter)
+        logging.root.addHandler(handler)
+
+    logging.root.setLevel('INFO')
+
+
 def main():
-    logging.basicConfig(level='INFO',
-                        format=os.environ.get('LOG_FORMAT'))
+    configure_logging()
     server = Receiver()
     logging.info('%r starting', server)
     server.serve()

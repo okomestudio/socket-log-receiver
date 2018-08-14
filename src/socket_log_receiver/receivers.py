@@ -3,8 +3,13 @@ import logging
 import logging.handlers
 import pickle
 import struct
-from socketserver import StreamRequestHandler
-from socketserver import ThreadingTCPServer
+try:
+    from socketserver import StreamRequestHandler
+    from socketserver import ThreadingTCPServer
+except ImportError:
+    # For Python 2.7
+    from SocketServer import StreamRequestHandler
+    from SocketServer import ThreadingTCPServer
 
 
 class Handler(StreamRequestHandler):

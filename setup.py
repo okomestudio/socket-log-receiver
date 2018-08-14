@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import codecs
 import os
 import re
@@ -38,16 +39,15 @@ setup(
     url='https://github.com/okomestudio/socket_log_server',
     install_requires=[],
     extras_require={
-        'dev': [
-            'coverage>=4.4.1',
-            'mock>=2.0.0',
-            'pytest>=3.1.1',
-            'pytest-cov>=2.5.1',
-        ]
+        'dev': ['coverage>=4.5.1',
+                'mock>=2.0.0',
+                'pytest==3.7.0',
+                'pytest-cov>=2.5.1',
+                'pytest-xprocess>=0.12.1']
     },
     entry_points={
         'console_scripts': [
-            'receiver=socket_log_receiver.receivers:main',
+            'receiver=socket_log_receiver:main',
         ]
     }
 )

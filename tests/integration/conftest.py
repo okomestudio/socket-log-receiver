@@ -2,16 +2,18 @@
 import pytest
 from xprocess import ProcessStarter
 
+PROGNAME = "log_receiver"
+
 
 @pytest.fixture
 def receiver(xprocess):
     class Starter(ProcessStarter):
         pattern = r"<.*Receiver.*> starting"
-        args = ["receiver"]
+        args = [PROGNAME]
 
-    pid, logpath = xprocess.ensure("receiver", Starter)
+    pid, logpath = xprocess.ensure(PROGNAME, Starter)
 
     yield logpath
 
-    pinfo = xprocess.getinfo("receiver")
+    pinfo = xprocess.getinfo(PROGNAME)
     pinfo.terminate()

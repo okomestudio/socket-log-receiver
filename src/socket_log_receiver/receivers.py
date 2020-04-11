@@ -5,6 +5,7 @@ import logging.handlers
 import os
 import pickle
 import struct
+
 try:
     from socketserver import StreamRequestHandler
     from socketserver import ThreadingTCPServer
@@ -15,13 +16,12 @@ except ImportError:
 
 
 class Handler(StreamRequestHandler):
-
     def handle(self):
         while 1:
             chunk = self.connection.recv(4)
             if len(chunk) < 4:
                 break
-            slen = struct.unpack('>L', chunk)[0]
+            slen = struct.unpack(">L", chunk)[0]
             chunk = self.connection.recv(slen)
             while len(chunk) < slen:
                 chunk = chunk + self.connection.recv(slen - len(chunk))
@@ -45,10 +45,12 @@ class Receiver(ThreadingTCPServer):
 
     allow_reuse_address = True
 
-    def __init__(self,
-                 host='0.0.0.0',
-                 port=logging.handlers.DEFAULT_TCP_LOGGING_PORT,
-                 handler=Handler):
+    def __init__(
+        self,
+        host="0.0.0.0",
+        port=logging.handlers.DEFAULT_TCP_LOGGING_PORT,
+        handler=Handler,
+    ):
         ThreadingTCPServer.__init__(self, (host, port), handler)
         self.abort = 0
         self.timeout = 1
@@ -56,42 +58,43 @@ class Receiver(ThreadingTCPServer):
 
     def serve(self):
         import select
+
         abort = 0
         while not abort:
-            rd, wr, ex = select.select([self.socket.fileno()],
-                                       [], [],
-                                       self.timeout)
+            rd, wr, ex = select.select([self.socket.fileno()], [], [], self.timeout)
             if rd:
                 self.handle_request()
             abort = self.abort
 
 
 def configure_logging():
-    filename = os.environ.get('LOG_FILENAME') or None
+    filename = os.environ.get("LOG_FILENAME") or None
     if filename:
-        mode = os.environ.get('LOG_FILEMODE') or 'a'
-        handlers = [logging.handlers.WatchedFileHandler(filename, mode=mode),
-                    logging.StreamHandler()]
+        mode = os.environ.get("LOG_FILEMODE") or "a"
+        handlers = [
+            logging.handlers.WatchedFileHandler(filename, mode=mode),
+            logging.StreamHandler(),
+        ]
     else:
         handlers = [logging.StreamHandler()]
 
-    format = os.environ.get('LOG_FORMAT') or logging.BASIC_FORMAT
-    datefmt = os.environ.get('LOG_DATEFMT') or None
+    format = os.environ.get("LOG_FORMAT") or logging.BASIC_FORMAT
+    datefmt = os.environ.get("LOG_DATEFMT") or None
     formatter = logging.Formatter(format, datefmt)
 
     for handler in handlers:
         handler.setFormatter(formatter)
         logging.root.addHandler(handler)
 
-    logging.root.setLevel('INFO')
+    logging.root.setLevel("INFO")
 
 
 def main():
     configure_logging()
     server = Receiver()
-    logging.info('%r starting', server)
+    logging.info("%r starting", server)
     server.serve()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

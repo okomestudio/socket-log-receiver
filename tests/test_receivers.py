@@ -18,26 +18,20 @@ def waiter(receiver):
         if size_pre < size_post:
             break
         if time.time() - t0 > 3:
-            raise Exception(
-                'Receiver does not appear to be receiving message(s)')
+            raise Exception("Receiver does not appear to be receiving message(s)")
 
 
 def random_message():
-    return 'Message to info ' + str(random.random())
+    return "Message to info " + str(random.random())
 
 
-@pytest.mark.parametrize('level', [
-    'critical',
-    'error',
-    'warning',
-    'info',
-    'debug',
-])
+@pytest.mark.parametrize("level", ["critical", "error", "warning", "info", "debug"])
 def test(receiver, level):
-    rootLogger = logging.getLogger('')
+    rootLogger = logging.getLogger("")
     rootLogger.setLevel(logging.DEBUG)
     socketHandler = logging.handlers.SocketHandler(
-        'localhost', logging.handlers.DEFAULT_TCP_LOGGING_PORT)
+        "localhost", logging.handlers.DEFAULT_TCP_LOGGING_PORT
+    )
     rootLogger.addHandler(socketHandler)
 
     msg = random_message()

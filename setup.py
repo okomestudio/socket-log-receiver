@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import codecs
 import os
@@ -19,13 +20,28 @@ def find_meta(category, fpath="src/socket_log_receiver/__init__.py"):
     raise Exception("Meta info string for {} undefined".format(category))
 
 
+requires = []
+
+setup_requires = []
+
+dev_requires = ["black>=19.10b", "flake8>=3.7.9", "isort>=4.3.21", "pre-commit>=2.2.0"]
+
+tests_require = [
+    "coverage>=5.0.4",
+    "mock>=4.0.2",
+    "pytest>=5.4.1",
+    "pytest-cov>=2.8.1",
+    "pytest-xprocess>=0.13.1",
+]
+
 setup(
     name="socket_log_receiver",
-    description="Socket log server",
+    version=find_meta("version"),
+    description="A light-weight socket log receiver",
     author=find_meta("author"),
     author_email=find_meta("author_email"),
     license=find_meta("license"),
-    version=find_meta("version"),
+    url="https://github.com/okomestudio/socket-log-receiver",
     platforms=["Linux"],
     classifiers=[
         "Development Status :: 3 - Alpha",
@@ -43,16 +59,8 @@ setup(
     ],
     package_dir={"": "src"},
     packages=find_packages("src"),
-    url="https://github.com/okomestudio/socket-log-server",
+    python_requires=">=2.7, >=3.4",
     install_requires=[],
-    extras_require={
-        "dev": [
-            "coverage>=4.5.1",
-            "mock>=2.0.0",
-            "pytest==3.7.0",
-            "pytest-cov>=2.5.1",
-            "pytest-xprocess>=0.12.1",
-        ]
-    },
+    extras_require={"dev": dev_requires + tests_require},
     entry_points={"console_scripts": ["receiver=socket_log_receiver:main"]},
 )

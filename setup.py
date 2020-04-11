@@ -62,5 +62,7 @@ setup(
     python_requires=">=2.7, >=3.4",
     install_requires=[],
     extras_require={"dev": dev_requires + tests_require},
-    entry_points={"console_scripts": ["receiver=socket_log_receiver:main"]},
+    entry_points={
+        "console_scripts": ["log_receiver=socket_log_receiver.__main__:main"]
+    },
 )

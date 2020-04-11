@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import logging
 import logging.handlers
@@ -87,14 +86,3 @@ def configure_logging():
         logging.root.addHandler(handler)
 
     logging.root.setLevel("INFO")
-
-
-def main():
-    configure_logging()
-    server = Receiver()
-    logging.info("%r starting", server)
-    server.serve()
-
-
-if __name__ == "__main__":
-    main()

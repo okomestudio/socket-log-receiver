@@ -27,9 +27,9 @@ setup_requires = []
 dev_requires = ["black>=19.10b", "flake8>=3.7.9", "isort>=4.3.21", "pre-commit>=2.2.0"]
 
 tests_require = [
-    "coverage>=5.0.4",
-    "mock>=4.0.2",
-    "pytest>=5.4.1",
+    "coverage>=4.5.4",
+    "mock>=3.0.5",
+    "pytest>=4.6.9",
     "pytest-cov>=2.8.1",
     "pytest-xprocess>=0.13.1",
 ]
@@ -59,9 +59,10 @@ setup(
     ],
     package_dir={"": "src"},
     packages=find_packages("src"),
-    python_requires=">=2.7, >=3.4",
+    python_requires=">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*",
     install_requires=[],
-    extras_require={"dev": dev_requires + tests_require},
+    tests_require=tests_require,
+    extras_require={"dev": dev_requires + tests_require, "test": tests_require},
     entry_points={
         "console_scripts": ["log_receiver=socket_log_receiver.__main__:main"]
     },

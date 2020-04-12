@@ -7,8 +7,15 @@ import re
 from setuptools import find_packages
 from setuptools import setup
 
+here = os.path.abspath(os.path.dirname(__file__))
 
-def find_meta(category, fpath="src/socket_log_receiver/__init__.py"):
+
+def fread(filename):
+    with codecs.open(os.path.join(here, filename), "r", encoding="utf-8") as f:
+        return f.read()
+
+
+def meta(category, fpath="src/socket_log_receiver/__init__.py"):
     here = os.path.abspath(os.path.dirname(__file__))
     with codecs.open(os.path.join(here, fpath), "r") as f:
         package_root_file = f.read()
@@ -35,12 +42,14 @@ tests_require = [
 ]
 
 setup(
-    name="socket_log_receiver",
-    version=find_meta("version"),
+    name="socket-log-receiver",
+    version=meta("version"),
     description="A light-weight socket log receiver",
-    author=find_meta("author"),
-    author_email=find_meta("author_email"),
-    license=find_meta("license"),
+    long_description=fread("README.md"),
+    long_description_content_type="text/markdown",
+    author=meta("author"),
+    author_email=meta("author_email"),
+    license=meta("license"),
     url="https://github.com/okomestudio/socket-log-receiver",
     platforms=["Linux"],
     classifiers=[

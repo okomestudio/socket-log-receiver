@@ -37,9 +37,7 @@ class _Handler(StreamRequestHandler):
             while len(chunk) < slen:
                 chunk = chunk + self.connection.recv(slen - len(chunk))
             obj = self._unpickle(chunk)
-            print(obj)
             record = logging.makeLogRecord(obj)
-            print(record)
             self._handle_log_record(record)
 
     def _unpickle(self, data):

@@ -2,10 +2,10 @@
 
 set -e
 
-pip install --force-reinstall --no-cache-dir -e .
+pip install -e .[dev]
 
-pytest -vv \
-       --cov=src/socket_log_receiver \
+python -m pytest -vv \
+       --cov=socket_log_receiver \
        --cov-report=term-missing \
        --log-level=DEBUG \
-       tests/
+       "${@:-tests/}"

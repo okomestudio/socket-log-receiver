@@ -1,6 +1,7 @@
 import logging
 import os
 import pickle
+import sys
 from logging.handlers import SocketHandler
 from tempfile import NamedTemporaryFile
 
@@ -9,9 +10,9 @@ from socket_log_receiver.receivers import Receiver
 from socket_log_receiver.receivers import _Handler
 from socket_log_receiver.receivers import configure_logging
 
-try:
+if sys.version_info >= (3, 6):
     from unittest.mock import MagicMock, Mock, patch
-except ImportError:
+else:
     from mock import MagicMock, Mock, patch
 
 

@@ -1,8 +1,10 @@
+import sys
+
 import socket_log_receiver.__main__ as main
 
-try:
+if sys.version_info >= (3, 6):
     from unittest.mock import patch
-except ImportError:
+else:
     from mock import patch
 
 

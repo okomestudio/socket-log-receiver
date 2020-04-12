@@ -4,14 +4,51 @@
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 
-# socket_log_receiver
-Socket log receiver
+# Socket Log Receiver
+
+`socket_log_receiver` is a light-weight socket log receiver. It runs
+as a server and aggregates messages from multi-process application via
+socket and logs to a single file. Python's `logging` package does not
+support logging to a single file from multiple processes. By pointing
+`SocketHandler` to `socket_log_receiver`, the multi-process
+application can log to a single file.
+
+
+## Installation
+
+``` bash
+$ pip install socket-log-receiver
+```
+
+
+## Basic Usage
+
+The receiver service should be run as a service.
+
+``` bash
+$ python -m socket_log_receiver  # as a module
+$ log_receiver                   # as a command-line program
+```
+
+In the application, use `SocketHandler` to send logs to the receiver
+service.
+
+``` python
+from logging.handlers import SocketHandler
+
+handler = SocketHandler('localhost', 9020)  # handler to send logs to localhost:9020
+logging.root.addHandler(handler)            # add the socket handler to the root logger
+```
+
+This way, the root logger sends logging messages to the receiver service.
+
 
 ## Development
 
 ```bash
 $ pip install -e .[dev]
 ```
+
 
 ### Running Tests
 

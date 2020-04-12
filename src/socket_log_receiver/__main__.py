@@ -7,9 +7,9 @@ from .receivers import configure_logging
 
 def main():
     configure_logging()
-    server = Receiver()
-    logging.info("%r starting", server)
-    server.serve()
+    receiver = Receiver()
+    logging.info("%r starting", receiver)
+    receiver.serve()
 
 
 if __name__ == "__main__":

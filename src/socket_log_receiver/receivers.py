@@ -3,6 +3,7 @@ import logging
 import logging.handlers
 import os
 import pickle
+from select import select
 from struct import unpack
 
 try:
@@ -59,36 +60,42 @@ class Receiver(ThreadingTCPServer):
 
     def __init__(
         self,
-        host="0.0.0.0",
+        host="127.0.0.1",
         port=logging.handlers.DEFAULT_TCP_LOGGING_PORT,
         handler=_Handler,
+        bind_and_activate=True,
+        abort=0,
+        timeout=1,
+        logname=None,
     ):
-        ThreadingTCPServer.__init__(self, (host, port), handler)
-        self.abort = 0
-        self.timeout = 1
-        self.logname = None
+        ThreadingTCPServer.__init__(
+            self, (host, port), handler, bind_and_activate=bind_and_activate
+        )
+        self.abort = abort
+        self.timeout = timeout
+        self.logname = logname
 
     def serve(self):
-        import select
-
         abort = 0
         while not abort:
-            rd, wr, ex = select.select([self.socket.fileno()], [], [], self.timeout)
+            rd, wr, ex = select([self.socket.fileno()], [], [], self.timeout)
             if rd:
                 self.handle_request()
             abort = self.abort
 
 
 def configure_logging():
+    handlers = []
+
     filename = os.environ.get("LOG_FILENAME") or None
     if filename:
-        mode = os.environ.get("LOG_FILEMODE") or "a"
+        mode = os.environ.get("LOG_FILEMODE") or "a+"
         handlers = [
             logging.handlers.WatchedFileHandler(filename, mode=mode),
-            logging.StreamHandler(),
         ]
-    else:
-        handlers = [logging.StreamHandler()]
+
+    if not any(type(h) == logging.StreamHandler for h in logging.root.handlers):
+        handlers.append(logging.StreamHandler())
 
     format = os.environ.get("LOG_FORMAT") or logging.BASIC_FORMAT
     datefmt = os.environ.get("LOG_DATEFMT") or None

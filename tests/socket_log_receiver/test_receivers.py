@@ -5,7 +5,6 @@ from logging.handlers import SocketHandler
 from tempfile import NamedTemporaryFile
 
 import pytest
-
 from socket_log_receiver.receivers import Receiver
 from socket_log_receiver.receivers import _Handler
 from socket_log_receiver.receivers import configure_logging
@@ -65,13 +64,14 @@ class TestHandler:
         sh = SocketHandler("localhost", "9999")
         stream = sh.makePickle(record)
 
-        idx = 0
-
         def recv(n):
-            nonlocal idx
+            # TODO: Can use nonlocal on Python 3
+            idx = recv.idx
             s = stream[idx : idx + n]
-            idx += n
+            recv.idx += n
             return s
+
+        recv.idx = 0
 
         with patch.object(_Handler, "_handle_log_record") as handle_log_record:
             handler = _Handler(response, "localhost:9999", server)

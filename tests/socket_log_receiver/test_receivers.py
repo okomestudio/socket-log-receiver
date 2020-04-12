@@ -119,7 +119,7 @@ class TestConfigureLogging:
     @pytest.fixture(autouse=True)
     def setup(self):
         handlers = logging.root.handlers
-        logging.root.handlers.clear()
+        logging.root.handlers = []
         yield
         logging.root.handlers = handlers
 

@@ -167,7 +167,8 @@ jobs:
           command: |
             python3 -m venv venv
             . venv/bin/activate
-            python setup.py verify
+            version=$(python -c "import socket_log_receiver as m; print(m.__version__)")
+            [ v$version = $CIRCLE_TAG ]
       - run:
           name: Create distribution package
           command: |

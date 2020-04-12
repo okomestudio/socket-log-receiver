@@ -3,7 +3,7 @@ import logging
 import logging.handlers
 import os
 import pickle
-import struct
+from struct import unpack
 
 try:
     from socketserver import StreamRequestHandler
@@ -14,24 +14,37 @@ except ImportError:
     from SocketServer import ThreadingTCPServer
 
 
-class Handler(StreamRequestHandler):
+class _Handler(StreamRequestHandler):
+    """Handler for log record pickled by logging.handlers.SocketHandler.
+
+    The SocketHandler.makePickle(record) streams the data according to
+
+    >>> data = pickle.dumps(record_attr_dict, 1)
+    >>> datalen = struct.pack('>L', len(data))
+    >>> datalen + data  # this will be streamed to socket
+
+    Basically the first four bytes contains the data length of the pickled log record.
+    """
+
     def handle(self):
         while 1:
             chunk = self.connection.recv(4)
             if len(chunk) < 4:
                 break
-            slen = struct.unpack(">L", chunk)[0]
+            slen = unpack(">L", chunk)[0]  # big-endian (>), unsigned long (L)
             chunk = self.connection.recv(slen)
             while len(chunk) < slen:
                 chunk = chunk + self.connection.recv(slen - len(chunk))
-            obj = self.unpickle(chunk)
+            obj = self._unpickle(chunk)
+            print(obj)
             record = logging.makeLogRecord(obj)
-            self.handle_log_record(record)
+            print(record)
+            self._handle_log_record(record)
 
-    def unpickle(self, data):
+    def _unpickle(self, data):
         return pickle.loads(data)
 
-    def handle_log_record(self, record):
+    def _handle_log_record(self, record):
         if self.server.logname is not None:
             name = self.server.logname
         else:
@@ -48,7 +61,7 @@ class Receiver(ThreadingTCPServer):
         self,
         host="0.0.0.0",
         port=logging.handlers.DEFAULT_TCP_LOGGING_PORT,
-        handler=Handler,
+        handler=_Handler,
     ):
         ThreadingTCPServer.__init__(self, (host, port), handler)
         self.abort = 0

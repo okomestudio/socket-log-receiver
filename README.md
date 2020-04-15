@@ -47,6 +47,7 @@ This way, the root logger sends logging messages to the receiver service.
 
 ```bash
 $ pip install -e .[dev]
+$ pre-commit install
 ```
 
 

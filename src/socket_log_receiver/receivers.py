@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
 import logging.handlers
-import os
 import pickle
 from select import select
 from struct import unpack
@@ -80,27 +79,3 @@ class Receiver(ThreadingTCPServer):
             if rd:
                 self.handle_request()
             abort = self.abort
-
-
-def configure_logging():
-    handlers = []
-
-    filename = os.environ.get("LOG_FILENAME") or None
-    if filename:
-        mode = os.environ.get("LOG_FILEMODE") or "a+"
-        handlers = [
-            logging.handlers.WatchedFileHandler(filename, mode=mode),
-        ]
-
-    if not any(type(h) == logging.StreamHandler for h in logging.root.handlers):
-        handlers.append(logging.StreamHandler())
-
-    format = os.environ.get("LOG_FORMAT") or logging.BASIC_FORMAT
-    datefmt = os.environ.get("LOG_DATEFMT") or None
-    formatter = logging.Formatter(format, datefmt)
-
-    for handler in handlers:
-        handler.setFormatter(formatter)
-        logging.root.addHandler(handler)
-
-    logging.root.setLevel("INFO")

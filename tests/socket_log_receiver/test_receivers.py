@@ -6,9 +6,9 @@ from logging.handlers import SocketHandler
 from tempfile import NamedTemporaryFile
 
 import pytest
+from socket_log_receiver.config import configure_logging
 from socket_log_receiver.receivers import Receiver
 from socket_log_receiver.receivers import _Handler
-from socket_log_receiver.receivers import configure_logging
 
 if sys.version_info >= (3, 6):
     from unittest.mock import MagicMock, Mock, patch

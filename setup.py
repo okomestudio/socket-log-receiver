@@ -70,7 +70,8 @@ setup(
     package_dir={"": "src"},
     packages=find_packages("src"),
     python_requires=">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*",
-    install_requires=[],
+    install_requires=requires,
+    setup_requires=setup_requires,
     tests_require=tests_require,
     extras_require={"dev": dev_requires + tests_require, "test": tests_require},
     entry_points={

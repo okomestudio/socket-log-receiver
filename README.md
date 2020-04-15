@@ -54,5 +54,5 @@ $ pre-commit install
 ### Running Tests
 
 ``` bash
-$ bin/tests
+$ python setup.py tests
 ```

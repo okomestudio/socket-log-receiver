@@ -8,6 +8,7 @@ default = {
         "filemode": "a+",
         "format": logging.BASIC_FORMAT,
         "datefmt": None,
+        "level": "INFO",
     }
 }
 
@@ -15,6 +16,8 @@ config = ResConfig(default, load_on_init=False)
 
 
 def configure_logging():
+    logging.root.setLevel(config["log.level"])
+
     handlers = []
 
     filename = config["log.filename"]
@@ -32,5 +35,3 @@ def configure_logging():
     for handler in handlers:
         handler.setFormatter(formatter)
         logging.root.addHandler(handler)
-
-    logging.root.setLevel("INFO")

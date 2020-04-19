@@ -9,10 +9,7 @@ from .receivers import Receiver
 
 def main():
     p = ArgumentParser()
-    p.add_argument("--log-datefmt")
-    p.add_argument("--log-filename")
-    p.add_argument("--log-filemode")
-    p.add_argument("--log-format")
+    config.add_arguments_to_argparse(p)
     args = p.parse_args()
 
     config.prepare_from_argparse(args)

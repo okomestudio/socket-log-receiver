@@ -1,4 +1,5 @@
 import logging
+import logging.handlers
 import os
 from tempfile import NamedTemporaryFile
 from unittest.mock import patch

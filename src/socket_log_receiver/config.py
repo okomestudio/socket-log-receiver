@@ -11,7 +11,7 @@ default = {
     }
 }
 
-config = ResConfig(default, skip_load_on_init=True)
+config = ResConfig(default, load_on_init=False)
 
 
 def configure_logging():

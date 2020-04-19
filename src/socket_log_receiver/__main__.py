@@ -15,7 +15,7 @@ def main():
     p.add_argument("--log-format")
     args = p.parse_args()
 
-    config.read_from_argparse(args)
+    config.prepare_from_argparse(args)
     config.load()
 
     configure_logging()

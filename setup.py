@@ -27,7 +27,7 @@ def meta(category, fpath="src/socket_log_receiver/__init__.py"):
     raise Exception("Meta info string for {} undefined".format(category))
 
 
-requires = ["resconfig==20.4.2a"]
+requires = ["resconfig==20.4.3a.dev0"]
 
 setup_requires = ["pytest-runner>=5.2"]
 

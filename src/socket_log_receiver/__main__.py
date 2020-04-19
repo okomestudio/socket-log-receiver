@@ -1,24 +1,19 @@
 # -*- coding: utf-8 -*-
-import logging
 from argparse import ArgumentParser
 
 from .config import config
-from .config import configure_logging
-from .receivers import Receiver
+from .receivers import configure_logging
+from .receivers import serve
 
 
 def main():
     p = ArgumentParser()
     config.add_arguments_to_argparse(p)
     args = p.parse_args()
-
     config.prepare_from_argparse(args)
+    config.register("log", configure_logging)
+    config.register("receiver", serve)
     config.load()
-
-    configure_logging()
-    receiver = Receiver()
-    logging.info("%r starting", receiver)
-    receiver.serve()
 
 
 if __name__ == "__main__":

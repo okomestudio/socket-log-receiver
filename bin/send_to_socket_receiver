@@ -8,7 +8,7 @@ from uuid import uuid4 as get_uuid
 def main(host, port, level, message=None):
     handler = logging.handlers.SocketHandler(host, port)
     logging.root.addHandler(handler)
-    logging.basicConfig(level=logging.DEBUG)
+    logging.root.setLevel(logging.DEBUG)
 
     uuid = get_uuid()
     message = message if message else "Test message %s" % uuid.hex

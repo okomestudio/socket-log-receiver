@@ -67,7 +67,7 @@ jobs:
           name: Run tests
           command: |
             . venv/bin/activate
-            bin/tests
+            python setup.py tests
       - store_artifacts:
           path: test-reports
           destination: test-reports
@@ -101,7 +101,7 @@ jobs:
           name: Run tests
           command: |
             . venv/bin/activate
-            bin/tests
+            python setup.py tests
             coveralls
       - store_artifacts:
           path: test-reports
@@ -136,7 +136,7 @@ jobs:
           name: Run tests
           command: |
             #. venv/bin/activate
-            bin/tests
+            python setup.py tests
             coveralls
       - store_artifacts:
           path: test-reports

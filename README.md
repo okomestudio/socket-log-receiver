@@ -1,3 +1,6 @@
+[![License](https://img.shields.io/pypi/l/socket-log-receiver.svg)](https://pypi.org/project/socket-log-receiver/)
+[![PyPI Version](https://badge.fury.io/py/socket-log-receiver.svg)](https://pypi.org/project/socket-log-receiver/)
+[![Package Status](https://img.shields.io/pypi/status/socket-log-receiver.svg)](https://pypi.org/project/resconfig/)
 [![pyversion Status](https://img.shields.io/pypi/pyversions/socket-log-receiver.svg)](https://img.shields.io/pypi/pyversions/socket-log-receiver.svg)
 [![CircleCI](https://circleci.com/gh/okomestudio/socket-log-receiver.svg?style=shield)](https://circleci.com/gh/okomestudio/socket-log-receiver)
 [![Coverage Status](https://coveralls.io/repos/github/okomestudio/socket-log-receiver/badge.svg?branch=development)](https://coveralls.io/github/okomestudio/socket-log-receiver?branch=development&kill_cache=1)

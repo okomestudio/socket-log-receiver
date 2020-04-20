@@ -31,7 +31,13 @@ requires = ["resconfig==20.4.3a0"]
 
 setup_requires = ["pytest-runner>=5.2"]
 
-dev_requires = ["black>=19.10b", "flake8>=3.7.9", "isort>=4.3.21", "pre-commit>=2.2.0"]
+dev_requires = [
+    "black>=19.10b",
+    "flake8>=3.7.9",
+    "isort[pyproject]>=4.3.21",
+    "pre-commit>=2.2.0",
+    "seed-isort-config>=2.1.1",
+]
 
 tests_require = [
     "coverage>=4.5.4",

@@ -6,8 +6,14 @@ repos:
         # Specify generic python since a venv is assumed for development.
         language_version: python
 
+  - repo: https://github.com/asottile/seed-isort-config
+    rev: v2.1.1
+    hooks:
+      - id: seed-isort-config
+
   - repo: https://github.com/timothycrosley/isort
     rev: 4.3.21
     hooks:
       - id: isort
         language_version: python
+        additional_dependencies: [toml]

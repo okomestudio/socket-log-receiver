@@ -5,6 +5,7 @@ workflows:
     jobs:
       - test-install:
           version: "3.8.2"
+          coverage: true
       - test-install:
           version: "3.7.7"
       - test-install:
@@ -13,8 +14,6 @@ workflows:
           version: "3.5.9"
       - test-install:
           version: "3.4.10"
-      - test-install-py2:
-          version: "2.7.17"
 
   build_and_deploy:
     jobs:
@@ -77,6 +76,10 @@ jobs:
       version:
         type: string
         default: latest
+      coverage:
+        description: upload coverage report
+        type: boolean
+        default: false
     docker:
       - image: circleci/python:<< parameters.version >>
     working_directory: ~/repo
@@ -92,7 +95,7 @@ jobs:
             python3 -m venv venv || virtualenv venv
             . venv/bin/activate
             pip install -e .[test]
-            pip install coveralls
+            << parameters.coverage >> && pip install coveralls || :
       - save_cache:
           key: v1-dependencies-{{ checksum "setup.py" }}
           paths:
@@ -102,42 +105,7 @@ jobs:
           command: |
             . venv/bin/activate
             python setup.py tests
-            coveralls
-      - store_artifacts:
-          path: test-reports
-          destination: test-reports
-
-  test-install-py2:
-    parameters:
-      version:
-        type: string
-        default: latest
-    docker:
-      - image: circleci/python:<< parameters.version >>
-    working_directory: ~/repo
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "setup.py" }}
-            - v1-dependencies-
-      - run:
-          name: Install dependencies
-          command: |
-            #virtualenv venv
-            #. venv/bin/activate
-            pip install .[test]
-            pip install coveralls
-      - save_cache:
-          key: v1-dependencies-{{ checksum "setup.py" }}
-          paths:
-            - ./venv
-      - run:
-          name: Run tests
-          command: |
-            #. venv/bin/activate
-            python setup.py tests
-            coveralls
+            << parameters.coverage >> && coveralls || :
       - store_artifacts:
           path: test-reports
           destination: test-reports

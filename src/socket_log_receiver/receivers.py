@@ -104,5 +104,6 @@ def configure_logging(action, _, con):
     formatter = logging.Formatter(format, datefmt)
 
     for handler in handlers:
+        handler.setLevel(con["level"])
         handler.setFormatter(formatter)
         logging.root.addHandler(handler)

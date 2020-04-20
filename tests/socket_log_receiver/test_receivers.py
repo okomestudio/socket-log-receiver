@@ -1,10 +1,14 @@
+import logging
 import pickle
 import sys
 from logging.handlers import SocketHandler
+from tempfile import NamedTemporaryFile
 
 import pytest
+
 from socket_log_receiver.receivers import Receiver
 from socket_log_receiver.receivers import _Handler
+from socket_log_receiver.receivers import configure_logging
 
 if sys.version_info >= (3, 6):
     from unittest.mock import MagicMock, Mock, patch
@@ -72,3 +76,80 @@ class TestReceiver:
         with patch.object(receiver, "handle_request") as handle_request:
             receiver.serve()
             handle_request.assert_not_called()
+
+
+class TestConfigureLogging:
+    @pytest.fixture(autouse=True)
+    def setup(self):
+        handlers = logging.root.handlers
+        logging.root.handlers = []
+        yield
+        logging.root.handlers = handlers
+
+    def _get_only_stream_handler(self):
+        handler = [
+            h for h in logging.root.handlers if type(h) == logging.StreamHandler
+        ][0]
+        return handler
+
+    @pytest.fixture(autouse=True)
+    def conf(self):
+        yield {
+            "filename": None,
+            "filemode": "a+",
+            "format": logging.BASIC_FORMAT,
+            "datefmt": None,
+            "level": "INFO",
+        }
+
+    @pytest.mark.parametrize("filemode", ["a", "a+", None])
+    def test_filename(self, filemode, conf):
+        configure_logging(None, None, conf)
+
+        with NamedTemporaryFile() as f:
+            conf["filename"] = f.name
+            if filemode is None:
+                conf["filemode"] = "a+"
+            else:
+                conf["filemode"] = filemode
+            with patch(
+                "logging.handlers.WatchedFileHandler",
+                wraps=logging.handlers.WatchedFileHandler,
+            ) as init:
+                configure_logging(None, None, conf)
+                init.assert_called_with(f.name, mode=filemode or "a+")
+        handlers = logging.root.handlers
+        assert any(isinstance(h, logging.handlers.WatchedFileHandler) for h in handlers)
+        assert len([h for h in handlers if type(h) == logging.StreamHandler]) == 1
+
+    def test_filename_missing(self, conf):
+        configure_logging(None, None, conf)
+        handlers = logging.root.handlers
+        assert all(
+            not isinstance(h, logging.handlers.WatchedFileHandler) for h in handlers
+        )
+        assert len([h for h in handlers if type(h) == logging.StreamHandler]) == 1
+
+    def test_format(self, conf):
+        format = "TEST:%(message)s"
+        conf["format"] = format
+        configure_logging(None, None, conf)
+        handler = self._get_only_stream_handler()
+        assert format == handler.formatter._fmt
+
+    def test_format_missing(self, record, record_attrdict, conf):
+        configure_logging(None, None, conf)
+        handler = self._get_only_stream_handler()
+        assert logging.BASIC_FORMAT == handler.formatter._fmt
+
+    def test_datefmt(self, conf):
+        datefmt = "%Y"
+        conf["datefmt"] = datefmt
+        configure_logging(None, None, conf)
+        handler = self._get_only_stream_handler()
+        assert datefmt == handler.formatter.datefmt
+
+    def test_datefmt_missing(self, conf):
+        configure_logging(None, None, conf)
+        handler = self._get_only_stream_handler()
+        assert None is handler.formatter.datefmt

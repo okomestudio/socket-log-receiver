@@ -1,6 +1,7 @@
 import sys
 
 import socket_log_receiver.__main__ as main
+from socket_log_receiver.config import config
 
 if sys.version_info >= (3, 6):
     from unittest.mock import patch
@@ -10,6 +11,6 @@ else:
 
 class TestMain:
     def test(self):
-        with patch("socket_log_receiver.__main__.Receiver.serve") as serve:
+        with patch.object(config, "load") as load:
             main.main()
-            serve.assert_called()
+            load.assert_called()

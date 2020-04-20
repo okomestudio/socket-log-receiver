@@ -1,5 +1,6 @@
 import logging
 import logging.handlers
+import signal
 
 from resconfig import ResConfig
 
@@ -18,3 +19,10 @@ default = {
 }
 
 config = ResConfig(default, load_on_init=False)
+
+
+def handler(*args, **kwargs):
+    config.load()
+
+
+signal.signal(signal.SIGHUP, handler)

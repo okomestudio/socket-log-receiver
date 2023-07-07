@@ -51,7 +51,6 @@ class _Handler(StreamRequestHandler):
 
 
 class Receiver(ThreadingTCPServer):
-
     allow_reuse_address = True
 
     def __init__(
@@ -65,7 +64,7 @@ class Receiver(ThreadingTCPServer):
         logname=None,
     ):
         ThreadingTCPServer.__init__(
-            self, (host, port), handler, bind_and_activate=bind_and_activate
+            self, (host, int(port)), handler, bind_and_activate=bind_and_activate
         )
         self.abort = abort
         self.timeout = timeout

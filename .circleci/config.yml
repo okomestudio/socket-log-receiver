@@ -50,20 +50,18 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v2-dependencies-{{ checksum "setup.py" }}
+            - v2-dependencies-{{ checksum "pyproject.toml" }}
             - v2-dependencies-
       - run:
           name: Install dependencies
-          command: |
-            pip install -e .[test]
+          command: pip install -e .[test]
       - save_cache:
-          key: v2-dependencies-{{ checksum "setup.py" }}
+          key: v2-dependencies-{{ checksum "pyproject.toml" }}
           paths:
             - /home/circleci/versions
       - run:
           name: Run tests
-          command: |
-            python setup.py tests
+          command: pytest
       - store_artifacts:
           path: test-reports
           destination: test-reports
@@ -84,7 +82,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v2-dependencies-{{ checksum "setup.py" }}
+            - v2-dependencies-{{ checksum "pyproject.toml" }}
             - v2-dependencies-
       - run:
           name: Install dependencies
@@ -92,13 +90,13 @@ jobs:
             pip install -e .[test]
             << parameters.coverage >> && pip install coveralls || :
       - save_cache:
-          key: v1-dependencies-{{ checksum "setup.py" }}
+          key: v1-dependencies-{{ checksum "pyproject.toml" }}
           paths:
             - /home/circleci/versions
       - run:
           name: Run tests
           command: |
-            python setup.py tests
+            pytest
             << parameters.coverage >> && coveralls || :
       - store_artifacts:
           path: test-reports
@@ -111,27 +109,25 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v2-dependencies-{{ checksum "setup.py" }}
+            - v2-dependencies-{{ checksum "pyproject.toml" }}
             - v2-dependencies-
       - run:
           name: Install dependencies
           command: |
-            pip install -U pip setuptools twine wheel
+            pip install -U pip setuptools twine wheel build
             pip install -e .[test]
       - save_cache:
-          key: v2-dependencies-{{ checksum "setup.py" }}
+          key: v2-dependencies-{{ checksum "pyproject.toml" }}
           paths:
             - /home/circleci/versions
       - run:
           name: Verify git tag vs. version
           command: |
-            version=$(python -c "import socket_log_receiver as m; print(m.__version__)")
+            version=$(pip show socket_log_receiver | grep -Po '(?<=Version: ).*$')
             [ v$version = $CIRCLE_TAG ]
       - run:
           name: Create distribution package
-          command: |
-            python setup.py sdist bdist_wheel
+          command: python -m build --sdist --wheel
       - run:
           name: Upload to pypi
-          command: |
-            twine upload dist/*
+          command: twine upload dist/*

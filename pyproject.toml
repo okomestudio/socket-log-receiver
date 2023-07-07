@@ -1,8 +1,57 @@
-# Configuration for Black.
-#
-# NOTE: you have to use single-quoted strings in TOML for regular expressions.
-# It's the equivalent of r-strings in Python.  Multiline strings are treated as
-# verbose regular expressions by Black.  Use [ ] to denote a significant space.
+[build-system]
+requires = ["setuptools>=67.8.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "socket-log-receiver"
+version = "23.7.0a"
+authors = [{name="Taro Sato", email="okomestudio@gmail.com"}]
+description = "A light-weight socket log receiver"
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Utilities",
+]
+dependencies = ["resconfig==20.4.3a0"]
+
+[project.optional-dependencies]
+dev = [
+    "black==23.3.0",
+    "flake8==6.0.0",
+    "isort[pyproject]==5.12.0",
+    "pre-commit==3.3.2",
+]
+
+test = [
+    "coverage[toml]==7.2.7",
+    "pytest==7.3.1",
+    "pytest-cov==4.1.0",
+    "pytest-mock==3.10.0",
+    "pytest-xprocess==0.22.2",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/okomestudio/socket-log-receiver"
+"Buck Tracker" = "https://github.com/okomestudio/socket-log-receiver/issues"
+
+[project.scripts]
+log_receiver = "socket_log_receiver.__main__:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+license-files = ["LICENSE.txt"]
+include-package-data = true
+package-data = {"socket_log_receiver" = []}
 
 [tool.black]
 line-length = 88
@@ -38,3 +87,10 @@ line_length = 88
 force_single_line = true
 known_first_party = ["socket_log_receiver"]
 known_third_party = ["pytest", "resconfig", "setuptools", "xprocess"]
+
+[tool.pytest.ini_options]
+minversion = "7.3"
+addopts = "-vv --cov=socket_log_receiver --cov-report=term-missing"
+testpaths = [
+    "tests",
+]

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "socket-log-receiver"
-version = "23.7.0a"
+version = "23.7.0a0"
 authors = [{name="Taro Sato", email="okomestudio@gmail.com"}]
 description = "A light-weight socket log receiver"
 readme = "README.md"

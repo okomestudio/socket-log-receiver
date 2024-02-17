@@ -1,6 +1,7 @@
 import logging
 import logging.handlers
 import signal
+import platform
 
 from resconfig import ResConfig
 
@@ -24,5 +25,7 @@ config = ResConfig(default, load_on_init=False)
 def handler(*args, **kwargs):
     config.load()
 
+if platform.system() != 'Linux':
+    signal.SIGHUP = 1
 
 signal.signal(signal.SIGHUP, handler)

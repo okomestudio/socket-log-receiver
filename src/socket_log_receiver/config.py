@@ -16,6 +16,9 @@ default = {
         "host": "localhost",
         "port": logging.handlers.DEFAULT_TCP_LOGGING_PORT,
     },
+    "reloader": {
+        "signal": "SIGHUP",
+    },
 }
 
 config = ResConfig(default, load_on_init=False)
@@ -25,4 +28,14 @@ def handler(*args, **kwargs):
     config.load()
 
 
-signal.signal(signal.SIGHUP, handler)
+def reloader(reload_signal):
+    # reloader_signal = config.get("reloader.signal", "SIGHUP")
+    print("FF", reload_signal)
+    logging.info("HERE")
+    try:
+        sig = getattr(signal, reload_signal)
+    except AttributeError:
+        raise RuntimeError(f"Signal '{ reload_signal }' not recognized")
+    logging.info("%s will reload config", sig)
+    signal.signal(sig, handler)
+    logging.info("%s will reload config", sig)

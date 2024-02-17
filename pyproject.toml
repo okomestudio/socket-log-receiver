@@ -94,3 +94,9 @@ addopts = "-vv --cov=socket_log_receiver --cov-report=term-missing"
 testpaths = [
     "tests",
 ]
+
+[too.mypy]
+python_version = "3.11"
+
+[[tool.mypy.overrides]]
+module = "socket_log_receiver.*"

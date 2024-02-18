@@ -8,12 +8,16 @@ from .receivers import configure_logging
 from .receivers import serve
 
 
-def main():
+def main(argv=None):
     p = ArgumentParser()
     p.add_argument("--conf")
-    p.add_argument("--reload-signal", default="SIGHUP")
+    p.add_argument(
+        "--reload-signal",
+        default="SIGHUP",
+        help="Signal to reload config.",
+    )
     config.add_arguments_to_argparse(p)
-    args = p.parse_args()
+    args = p.parse_args(argv)
     config.prepare_from_argparse(args, config_file_arg="conf")
     config.register("log", configure_logging)
     config.register("receiver", serve)

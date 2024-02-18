@@ -4,16 +4,16 @@ workflows:
   test:
     jobs:
       - test-install:
-          version: "3.11.4"
+          version: "3.12.1"
           coverage: true
+      - test-install:
+          version: "3.11.7"
       - test-install:
           version: "3.10.12"
       - test-install:
           version: "3.9.17"
       - test-install:
           version: "3.8.17"
-      - test-install:
-          version: "3.7.17"
 
   build_and_deploy:
     jobs:
@@ -24,7 +24,6 @@ workflows:
             branches:
               ignore: /.*/
       - test-install:
-          version: "3.7"
           requires:
             - build
           filters:
@@ -44,7 +43,7 @@ workflows:
 jobs:
   build:
     docker:
-      - image: cimg/python:3.11.4
+      - image: cimg/python:3.12.1
     working_directory: ~/repo
     steps:
       - checkout
@@ -104,7 +103,7 @@ jobs:
 
   deploy:
     docker:
-      - image: cimg/python:3.11.4
+      - image: cimg/python:3.12.1
     steps:
       - checkout
       - restore_cache:

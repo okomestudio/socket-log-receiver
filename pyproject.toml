@@ -4,22 +4,22 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "socket-log-receiver"
-version = "23.7.0a0"
+version = "24.2.0a0"
 authors = [{name="Taro Sato", email="okomestudio@gmail.com"}]
 description = "A light-weight socket log receiver"
 readme = "README.md"
-requires-python = ">=3.7"
+requires-python = ">=3.8"
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Operating System :: POSIX :: Linux",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "Topic :: Utilities",
 ]
 dependencies = ["resconfig==20.4.3a0"]
@@ -95,8 +95,9 @@ testpaths = [
     "tests",
 ]
 
-[too.mypy]
+[tool.mypy]
 python_version = "3.11"
 
 [[tool.mypy.overrides]]
-module = "socket_log_receiver.*"
+  module = "resconfig.*"
+  ignore_missing_imports = true

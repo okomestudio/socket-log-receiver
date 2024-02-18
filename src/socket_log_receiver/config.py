@@ -1,6 +1,8 @@
 import logging
 import logging.handlers
 import signal
+from types import FrameType
+from typing import Optional
 
 from resconfig import ResConfig
 
@@ -24,16 +26,16 @@ default = {
 config = ResConfig(default, load_on_init=False)
 
 
-def handler(*args, **kwargs):
+def reloader(signal_number: int, stack_frame: Optional[FrameType]) -> None:
     config.load()
 
 
-def reloader(reload_signal: str):
+def setup_reloader(reload_signal: str) -> None:
     """Configure config reloader."""
     try:
         sig = getattr(signal, reload_signal)
         assert isinstance(sig, signal.Signals)
     except (AttributeError, AssertionError):
         raise RuntimeError(f"Signal '{ reload_signal }' not recognized")
-    signal.signal(sig, handler)
+    signal.signal(sig, reloader)
     logging.info("%s will reload config", sig)

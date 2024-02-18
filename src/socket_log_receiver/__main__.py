@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 from argparse import ArgumentParser
+from typing import List, Optional
 
-from socket_log_receiver.config import config
-from socket_log_receiver.config import reloader
+from socket_log_receiver.config import config, setup_reloader
 
-from .receivers import configure_logging
-from .receivers import serve
+from .receivers import configure_logging, serve
 
 
-def main(argv=None):
+def main(argv: Optional[List[str]] = None) -> None:
     p = ArgumentParser()
     p.add_argument("--conf")
     p.add_argument(
@@ -21,9 +20,9 @@ def main(argv=None):
     config.prepare_from_argparse(args, config_file_arg="conf")
     config.register("log", configure_logging)
     config.register("receiver", serve)
-    reloader(args.reload_signal)
+    setup_reloader(args.reload_signal)
     config.load()
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    raise SystemExit(main())  # type: ignore

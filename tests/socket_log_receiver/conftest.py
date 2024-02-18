@@ -1,11 +1,11 @@
 import logging
-from unittest.mock import MagicMock
-from unittest.mock import patch
+from typing import Generator
+from unittest.mock import MagicMock, patch
 
 import pytest
 
 
-def _record_as_attrdict(record):
+def _record_as_attrdict(record: logging.LogRecord) -> dict:
     d = dict(record.__dict__)
     d["msg"] = record.getMessage()
     d["args"] = None
@@ -16,8 +16,8 @@ def _record_as_attrdict(record):
 
 
 @pytest.fixture(scope="module", autouse=True)
-def patch_log_record():
-    def __eq__(self, other):
+def patch_log_record() -> Generator[None, None, None]:
+    def __eq__(self: logging.LogRecord, other: logging.LogRecord) -> bool:
         return _record_as_attrdict(self) == _record_as_attrdict(other)
 
     with patch("logging.LogRecord.__eq__", __eq__):
@@ -25,20 +25,20 @@ def patch_log_record():
 
 
 @pytest.fixture
-def record():
+def record() -> logging.LogRecord:
     return logging.LogRecord("name", logging.DEBUG, "/path/to", 1, "message", (), None)
 
 
 @pytest.fixture
-def record_attrdict(record):
+def record_attrdict(record: logging.LogRecord) -> dict:
     return _record_as_attrdict(record)
 
 
 @pytest.fixture
-def server():
+def server() -> MagicMock:
     return MagicMock(logname="foo")
 
 
 @pytest.fixture
-def response():
+def response() -> MagicMock:
     return MagicMock()

@@ -1,16 +1,11 @@
 # -*- coding: utf-8 -*-
 import logging
 import pickle
+from logging.handlers import WatchedFileHandler
 from select import select
+from socketserver import StreamRequestHandler, ThreadingTCPServer
 from struct import unpack
-
-try:
-    from socketserver import StreamRequestHandler
-    from socketserver import ThreadingTCPServer
-except ImportError:
-    # For Python 2.7
-    from SocketServer import StreamRequestHandler
-    from SocketServer import ThreadingTCPServer
+from typing import Any, List, Optional, Type, Union
 
 
 class _Handler(StreamRequestHandler):
@@ -22,10 +17,11 @@ class _Handler(StreamRequestHandler):
     >>> datalen = struct.pack('>L', len(data))
     >>> datalen + data  # this will be streamed to socket
 
-    Basically the first four bytes contains the data length of the pickled log record.
+    Basically the first four bytes contains the data length of the
+    pickled log record.
     """
 
-    def handle(self):
+    def handle(self) -> None:
         while 1:
             chunk = self.connection.recv(4)
             if len(chunk) < 4:
@@ -38,11 +34,11 @@ class _Handler(StreamRequestHandler):
             record = logging.makeLogRecord(obj)
             self._handle_log_record(record)
 
-    def _unpickle(self, data):
+    def _unpickle(self, data: bytes) -> Any:
         return pickle.loads(data)
 
-    def _handle_log_record(self, record):
-        if self.server.logname is not None:
+    def _handle_log_record(self, record: logging.LogRecord) -> None:
+        if hasattr(self.server, "logname") and self.server.logname is not None:
             name = self.server.logname
         else:
             name = record.name
@@ -55,13 +51,13 @@ class Receiver(ThreadingTCPServer):
 
     def __init__(
         self,
-        host,
-        port,
-        handler=_Handler,
-        bind_and_activate=True,
-        abort=0,
-        timeout=1,
-        logname=None,
+        host: str,
+        port: Union[int, str],
+        handler: Type[StreamRequestHandler] = _Handler,
+        bind_and_activate: bool = True,
+        abort: int = 0,
+        timeout: float = 1.0,
+        logname: Optional[str] = None,
     ):
         ThreadingTCPServer.__init__(
             self, (host, int(port)), handler, bind_and_activate=bind_and_activate
@@ -70,7 +66,7 @@ class Receiver(ThreadingTCPServer):
         self.timeout = timeout
         self.logname = logname
 
-    def serve(self):
+    def serve(self) -> None:
         abort = 0
         while not abort:
             rd, wr, ex = select([self.socket.fileno()], [], [], self.timeout)
@@ -79,21 +75,21 @@ class Receiver(ThreadingTCPServer):
             abort = self.abort
 
 
-def serve(action, _, con):
+def serve(action: int, _: dict, con: dict) -> None:
     receiver = Receiver(con["host"], con["port"])
     logging.info("%r starting", receiver)
     receiver.serve()
 
 
-def configure_logging(action, _, con):
+def configure_logging(action: int, _: dict, con: dict) -> None:
     logging.root.setLevel(con["level"])
 
-    handlers = []
+    handlers: List[logging.Handler] = []
 
     filename = con["filename"]
     if filename:
         mode = con["filemode"]
-        handlers = [logging.handlers.WatchedFileHandler(filename, mode=mode)]
+        handlers = [WatchedFileHandler(filename, mode=mode)]
 
     if not any(type(h) == logging.StreamHandler for h in logging.root.handlers):
         handlers.append(logging.StreamHandler())

@@ -4,12 +4,14 @@ import logging.handlers
 import random
 import time
 from contextlib import contextmanager
+from typing import Generator
 
 import pytest
+from _pytest._py.path import LocalPath
 
 
 @contextmanager
-def waiter(receiver):
+def waiter(receiver: LocalPath) -> Generator[None, None, None]:
     size_pre = receiver.size()
     yield
     t0 = time.time()
@@ -21,14 +23,14 @@ def waiter(receiver):
             raise Exception("Receiver does not appear to be receiving message(s)")
 
 
-def random_message():
+def random_message() -> str:
     return "Message to info " + str(random.random())
 
 
 @pytest.mark.parametrize(
     "level", ["critical", "error", "warning", "info"]  # "debug" will hang
 )
-def test(receiver, level):
+def test(receiver: LocalPath, level: str) -> None:
     rootLogger = logging.getLogger("")
     rootLogger.setLevel(logging.DEBUG)
     socketHandler = logging.handlers.SocketHandler(

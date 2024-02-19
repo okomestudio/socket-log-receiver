@@ -24,6 +24,7 @@ workflows:
             branches:
               ignore: /.*/
       - test-install:
+          version: "3.12.1"
           requires:
             - build
           filters:

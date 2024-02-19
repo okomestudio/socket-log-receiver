@@ -26,11 +26,9 @@ dependencies = ["resconfig==20.4.3a0"]
 
 [project.optional-dependencies]
 dev = [
-    "black==24.2.0",
-    "flake8==7.0.0",
-    "isort[pyproject]==5.13.2",
     "mypy==1.8.0",
     "pre-commit==3.6.1",
+    "ruff==0.2.2",
 ]
 
 test = [
@@ -54,23 +52,6 @@ license-files = ["LICENSE.txt"]
 include-package-data = true
 package-data = {"socket_log_receiver" = []}
 
-[tool.black]
-line-length = 88
-py36 = true
-include = '\.pyi?$'
-exclude = '''
-/(
-    \.git
-  | \.mypy_cache
-  | \.tox
-  | \.venv
-  | _build
-  | buck-out
-  | build
-  | dist
-)/
-'''
-
 [tool.coverage.report]
 exclude_lines = [
     "def __repr__",
@@ -83,17 +64,18 @@ exclude_lines = [
     "raise NotImplementedError",
 ]
 
-[tool.isort]
-line_length = 88
-known_first_party = ["socket_log_receiver"]
-known_third_party = ["pytest", "resconfig", "setuptools", "xprocess"]
-
 [tool.pytest.ini_options]
 minversion = "7.3"
 addopts = "-vv --cov=socket_log_receiver --cov-report=term-missing"
 testpaths = [
     "tests",
 ]
+
+[too.ruff]
+target-version = "py38"
+
+[tool.ruff.lint]
+extend-select = ["I"]
 
 [tool.mypy]
 python_version = "3.11"

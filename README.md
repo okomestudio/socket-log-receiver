@@ -71,5 +71,6 @@ $ pre-commit install
 ### Running Tests
 
 ``` bash
+$ pip install -e .[test]
 $ pytest
 ```

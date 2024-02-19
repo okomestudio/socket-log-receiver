@@ -1,13 +1,11 @@
 repos:
-  - repo: https://github.com/ambv/black
-    rev: 24.2.0
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.2.2
     hooks:
-      - id: black
-        language_version: python
+      - id: ruff
+      - id: ruff-format
 
-  - repo: https://github.com/timothycrosley/isort
-    rev: 5.13.2
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.8.0
     hooks:
-      - id: isort
-        language_version: python
-        additional_dependencies: [toml]
+      - id: mypy

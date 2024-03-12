@@ -10,15 +10,15 @@
 # Socket Log Receiver
 
 `socket_log_receiver` is a light-weight socket log receiving server.
-It aggregates messages from multi-process application via socket and
-logs to a single file. The service is intended to be used with
-Python's `logging` package, which does not support multi-process
-writes to a single file.
+The server aggregates messages from multi-process applications via a
+socket and logs them to a single file. The service is used with
+Python's stdlib `logging` package, which by default does not support
+multi-process writes to a single file.
 
 
 ## Installation
 
-``` bash
+``` shell
 $ pip install socket-log-receiver
 ```
 
@@ -27,12 +27,15 @@ $ pip install socket-log-receiver
 
 The receiver service should be run as a service:
 
-``` bash
+``` shell
 $ python -m socket_log_receiver  # as a module
 $ log_receiver                   # as a command-line program
 ```
 
+These are equivalent.
+
 By default, the receiver service starts listening on `localhost:9020`.
+These can be changed through CLI options; see the Help section below.
 
 In the application, use `SocketHandler` to send logs to the receiver
 service.
@@ -46,6 +49,12 @@ logging.root.addHandler(handler)            # add the socket handler to the root
 
 This way, the root logger sends logging messages to the receiver service.
 
+### Help
+
+``` shell
+$ python -m socket_log_receiver -h
+$ log_receiver -h
+```
 
 ### Undefined Signal
 
@@ -55,14 +64,14 @@ dynamic configuration update is trigged by `SIGHUP`. Some systems
 might not make this signal available, in which case you could use a
 different signal for the trigger using the command-line option, e.g.
 
-``` bash
-$ log_receiver --reload-signal SIGUSR2
+``` shell
+$ log_receiver --reloader-signal SIGUSR2
 ```
 
 
 ## Development
 
-```bash
+``` shell
 $ pip install -e .[dev]
 $ pre-commit install
 ```
@@ -70,7 +79,7 @@ $ pre-commit install
 
 ### Running Tests
 
-``` bash
+``` shell
 $ pip install -e .[test]
 $ pytest
 ```

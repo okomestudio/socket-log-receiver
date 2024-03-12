@@ -28,7 +28,8 @@ def random_message() -> str:
 
 
 @pytest.mark.parametrize(
-    "level", ["critical", "error", "warning", "info"]  # "debug" will hang
+    "level",
+    ["critical", "error", "warning", "info"],  # "debug" will hang
 )
 def test(receiver: LocalPath, level: str) -> None:
     rootLogger = logging.getLogger("")

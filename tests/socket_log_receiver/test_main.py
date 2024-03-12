@@ -1,40 +1,40 @@
+import signal
 from unittest.mock import patch
 
 import pytest
-
 import socket_log_receiver.__main__ as main
-from socket_log_receiver.config import config
+from socket_log_receiver import config
 
 
 class TestMain:
     def test_default(self) -> None:
-        with patch.object(config, "load") as load:
+        with patch("socket_log_receiver.receivers.Receiver.serve") as serve:
             main.main()
 
-        load.assert_called()
+        serve.assert_called()
 
     def test_reload_signal_default(self) -> None:
         argv = None  # argv from command-line
 
-        with patch.object(config, "load") as load:
+        with patch("socket_log_receiver.receivers.Receiver.serve"):
             main.main(argv)
 
-        load.assert_called()
+        assert signal.getsignal(signal.SIGHUP) == config.reloader
 
     def test_reload_signal_override(self) -> None:
         available_signal = "SIGTERM"
-        argv = ["--reload-signal", available_signal]
+        argv = ["--reloader-signal", available_signal]
 
-        with patch.object(config, "load") as load:
+        with patch("socket_log_receiver.receivers.Receiver.serve"):
             main.main(argv)
 
-        load.assert_called()
+        assert signal.getsignal(signal.SIGTERM) == config.reloader
 
     def test_reload_signal_override_with_bad_signal(self) -> None:
         bad_signal = "SIGFOO"
-        argv = ["--reload-signal", bad_signal]
+        argv = ["--reloader-signal", bad_signal]
 
-        with patch.object(config, "load"):
+        with patch("socket_log_receiver.receivers.Receiver.serve"):
             with pytest.raises(RuntimeError) as exc:
                 main.main(argv)
 

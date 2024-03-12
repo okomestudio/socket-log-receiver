@@ -4,13 +4,13 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "socket-log-receiver"
-version = "24.2.0a0"
+version = "24.3.0b0"
 authors = [{name="Taro Sato", email="okomestudio@gmail.com"}]
 description = "A light-weight socket log receiver"
 readme = "README.md"
 requires-python = ">=3.8"
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Operating System :: POSIX :: Linux",

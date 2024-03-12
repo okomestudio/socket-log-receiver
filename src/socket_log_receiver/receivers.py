@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
+import os
 import pickle
 from logging.handlers import WatchedFileHandler
 from select import select
@@ -77,7 +78,7 @@ class Receiver(ThreadingTCPServer):
 
 def serve(action: int, _: dict, con: dict) -> None:
     receiver = Receiver(con["host"], con["port"])
-    logging.info("%r starting", receiver)
+    logging.info("%r starting (PID: %d)", receiver, os.getpid())
     receiver.serve()
 
 
